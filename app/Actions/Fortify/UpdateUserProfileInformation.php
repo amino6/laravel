@@ -3,6 +3,7 @@
 namespace App\Actions\Fortify;
 
 use App\Models\User;
+use Grimzy\LaravelMysqlSpatial\Types\Point;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
@@ -19,7 +20,7 @@ class UpdateUserProfileInformation implements UpdatesUserProfileInformation
     {
         Validator::make($input, [
             'name' => ['required', 'string', 'max:255'],
-
+            'username' => ['required', 'string', 'max:255','alpha_dash'],
             'email' => [
                 'required',
                 'string',
@@ -27,7 +28,16 @@ class UpdateUserProfileInformation implements UpdatesUserProfileInformation
                 'max:255',
                 Rule::unique('users')->ignore($user->id),
             ],
+            'tagline' => ['string', 'max:255'],
+            'name' => ['string', 'max:255'],
+            'about' => ['string', 'min:20'],
+            'formatted_address' => ['string', 'max:255'],
+            'latitude' => ['number', 'min:-90', 'max:90'],
+            'longitude' => ['number', 'min:-180', 'max:180'],
         ])->validateWithBag('updateProfileInformation');
+
+        if(isset($input['latitude']) && isset($input['longitude']))
+            $location = new Point($input['latitude'],$input['longitude']);
 
         if ($input['email'] !== $user->email &&
             $user instanceof MustVerifyEmail) {
@@ -35,7 +45,11 @@ class UpdateUserProfileInformation implements UpdatesUserProfileInformation
         } else {
             $user->forceFill([
                 'name' => $input['name'],
-                'email' => $input['email'],
+                'username' => $input['username'],
+                'tagline' => $input['tagline'] ?? $user->tagline,
+                'about' => $input['about'] ?? $user->about,
+                'location' => isset($location) ? $location : $user->location,
+                'formatted_address' => $input['formatted_address'] ?? $user->formatted_address,
             ])->save();
         }
     }
