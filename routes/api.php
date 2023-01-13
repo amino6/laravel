@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\DesignController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Models\User;
 use Illuminate\Support\Facades\Route;
@@ -16,6 +17,7 @@ Route::group(['middleware' => ['auth:sanctum']], function() {
     Route::get('/users',function() {
         return response()->json(['users' => User::all()],200);
     });
+    Route::apiResource('designs',DesignController::class);
 });
 
 // only guest users
