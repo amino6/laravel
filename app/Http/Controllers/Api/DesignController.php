@@ -19,7 +19,7 @@ class DesignController extends Controller
      */
     public function index()
     {
-        //
+        return DesignRessource::collection(Design::all());
     }
 
     /**
@@ -76,8 +76,12 @@ class DesignController extends Controller
         $this->authorize('update',$design);
         $this->validate($request, [
             "title" => ["required","unique:designs,title,".$design->id],
-            "description" => ['required',"string","min:20","max:255"]
+            "description" => ['required',"string","min:20","max:255"],
+            'tags' => ['required']
         ]);
+
+        $design->retag($request->tags);
+
         $design->update([
             "title" => $request->title,
             "slug" => Str::slug($request->title),

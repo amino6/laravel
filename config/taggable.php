@@ -1,5 +1,7 @@
 <?php
 
+use Illuminate\Support\Str;
+
 return [
 
     /**
@@ -18,7 +20,7 @@ return [
      * Method used to "normalize" tag names.  Can either be a global function name,
      * a closure function, or a callable, e.g. ['Classname', 'method'].
      */
-    'normalizer'           => 'mb_strtolower',
+    'normalizer'           => [Str::class, 'slug'],
 
     /**
      * The database connection to use for the Tag model and associated tables.
