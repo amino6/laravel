@@ -55,4 +55,8 @@ class User extends Authenticatable implements MustVerifyEmail
     public function designs() {
         return $this->hasMany(Design::class);
     }
+
+    public function comments() {
+        return $this->morphMany(Comment::class,'commentable')->orderBy('created_at','asc');
+    }
 }

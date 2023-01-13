@@ -1,7 +1,7 @@
 <?php
 
+use App\Http\Controllers\Api\CommentController;
 use App\Http\Controllers\Api\DesignController;
-use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Resources\UserResource;
 use App\Models\User;
 use Illuminate\Support\Facades\Route;
@@ -19,6 +19,7 @@ Route::group(['middleware' => ['auth:sanctum']], function() {
         return UserResource::collection(User::with('designs')->get());
     });
     Route::apiResource('designs',DesignController::class);
+    Route::apiResource('designs/{design}/comments',CommentController::class);
 });
 
 // only guest users

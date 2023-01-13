@@ -19,7 +19,7 @@ class DesignController extends Controller
      */
     public function index()
     {
-        return DesignRessource::collection(Design::all());
+        return DesignRessource::collection(Design::with(['comments'])->get());
     }
 
     /**
